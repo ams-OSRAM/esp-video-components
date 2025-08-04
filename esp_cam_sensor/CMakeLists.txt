@@ -14,6 +14,12 @@ if(CONFIG_CAMERA_XCLK_USE_LEDC)
     list(APPEND requires "esp_driver_ledc")
 endif()
 
+if(CONFIG_CAMERA_MIRA220)
+    list(APPEND srcs "sensors/mira220/mira220.c")
+    list(APPEND include_dirs "sensors/mira220/include")
+    list(APPEND priv_include_dirs "sensors/mira220/private_include")
+endif()
+
 if(CONFIG_CAMERA_OV2640)
     list(APPEND srcs "sensors/ov2640/ov2640.c")
     list(APPEND include_dirs "sensors/ov2640/include")
@@ -116,6 +122,9 @@ idf_component_register(SRCS ${srcs}
                        REQUIRES ${requires}
                        PRIV_REQUIRES ${priv_requires}
                        LDFRAGMENTS linker.lf)
+if(CONFIG_CAMERA_MIRA220_AUTO_DETECT)
+    target_link_libraries(${COMPONENT_LIB} INTERFACE "-u mira220_detect")
+endif()
 
 if(CONFIG_CAMERA_OV2640_AUTO_DETECT_DVP_INTERFACE_SENSOR)
     target_link_libraries(${COMPONENT_LIB} INTERFACE "-u ov2640_detect")
@@ -153,11 +162,11 @@ if(CONFIG_CAMERA_SC101IOT_AUTO_DETECT_DVP_INTERFACE_SENSOR)
     target_link_libraries(${COMPONENT_LIB} INTERFACE "-u sc101iot_detect")
 endif()
 
-if(CONFIG_CAMERA_SC030IOT_AUTO_DETECT_DVP_INTERFACE_SENSOR OR CONFIG_CAMERA_SC030IOT_AUTO_DETECT_MIPI_INTERFACE_SENSOR)
+if(CONFIG_CAMERA_SC030IOT_AUTO_DETECT)
     target_link_libraries(${COMPONENT_LIB} INTERFACE "-u sc030iot_detect")
 endif()
 
-if(CONFIG_CAMERA_OV2710_AUTO_DETECT_MIPI_INTERFACE_SENSOR)
+if(CONFIG_CAMERA_OV2710_AUTO_DETECT)
     target_link_libraries(${COMPONENT_LIB} INTERFACE "-u ov2710_detect")
 endif()
 
